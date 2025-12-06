@@ -1,0 +1,15 @@
+# Ignore Data Files (GitHub is for Code, not heavy Data)
+data/raw/
+
+# Ignore Python Cache
+__pycache__/
+*.pyc
+
+# Ignore Virtual Environment
+venv/
+.env
+.DS_Store
+
+# Ignore IDE settings
+.vscode/
+.idea/
