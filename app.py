@@ -22,7 +22,7 @@ model = load_model()
 # 2. STREAMLIT APP SETUP
 st.set_page_config(page_title="Dream House Predictor", page_icon="🏡", layout="centered")
 
-st.markdown("<h1 style='text-align: center; color: #2E86C1;'>🏡 Dream House Price AI</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #2E86C1;'>🏡 Dream House Price Prediction</h1>", unsafe_allow_html=True)
 # st.markdown("<p style='text-align: center;'>Fill in the <b>Required Fields (*)</b> to get an instant valuation.</p>", unsafe_allow_html=True)
 st.markdown("---")
 
