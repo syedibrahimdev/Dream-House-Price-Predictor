@@ -58,12 +58,14 @@ House-Price-Prediction/
 ├── app.py                  # Streamlit Web Application
 ├── requirements.txt        # Python dependencies
 └── README.md               # Project Documentation
-🛠️ How to Run Locally
+```
+
+## 🛠️ How to Run Locally
 Clone the Repository
 
 Bash
 
-git clone [https://github.com/syedibrahimdev/Dream-House-Price-AI.git](https://github.com/syedibrahimdev/Dream-House-Price-AI.git)
+git clone [https://github.com/syedibrahimdev/Dream-House-Price-Predictor.git](https://github.com/syedibrahimdev/Dream-House-Price-Predictor.git)
 cd House-Price-Prediction
 Install Dependencies
 
@@ -77,7 +79,7 @@ Bash
 streamlit run app.py
 The app will open in your browser at http://localhost:8501.
 
-📈 Key Steps Taken
+## 📈 Key Steps Taken
 Data Cleaning: Handled missing values (LotFrontage, Garage, etc.) and removed outliers (e.g., houses > 4000 sqft with low price).
 
 Feature Engineering: Created new features like TotalBath, HouseAge, and TotalPorchSF to capture hidden patterns.
@@ -86,7 +88,7 @@ Pipeline Construction: Built a Scikit-Learn Pipeline with ColumnTransformer to h
 
 Model Tuning: Used RandomizedSearchCV to optimize XGBoost parameters (n_estimators=1500, learning_rate=0.01).
 
-🤝 Contributing
+## 🤝 Contributing
 Feel free to fork this repo and submit Pull Requests.
 
 Author: Syed Ibrahim Ahmed
