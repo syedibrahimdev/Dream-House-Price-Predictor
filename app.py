@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
+import shap
+import matplotlib.pyplot as plt
 
 try:
     from src.preprocessing import engineer_features
@@ -18,6 +20,12 @@ def load_model():
         st.stop()
 
 model = load_model()
+
+@st.cache_resource
+def get_shap_explainer(_model):
+    # Access the actual XGBoost regressor inside the pipeline
+    regressor = _model.named_steps['regressor']
+    return shap.TreeExplainer(regressor)
 
 # 2. STREAMLIT APP SETUP
 st.set_page_config(page_title="Dream House Predictor", page_icon="🏡", layout="centered")
@@ -103,6 +111,18 @@ with st.form("prediction_form"):
     submitted = st.form_submit_button("💰 Predict Value", type="primary")
 
 if submitted:
+    errors = []
+    if year_remod < year_built:
+        errors.append("Year Remodeled cannot be before Year Built.")
+    if yr_sold < year_built:
+        errors.append("Year Sold cannot be before Year Built.")
+    if total_bsmt_sf > gr_liv_area * 2:
+        errors.append("Basement area seems unusually large compared to living area — please double-check.")
+
+    if errors:
+        for e in errors:
+            st.warning(f"⚠️ {e}")
+        st.stop()
     user_input = {
         'Neighborhood': neighborhood, 'LotArea': lot_area, 'MSZoning': ms_zoning,
         'HouseStyle': house_style, 'OverallQual': overall_qual, 'OverallCond': overall_cond, 
@@ -119,10 +139,32 @@ if submitted:
         df_processed = engineer_features(df_input)
         log_prediction = model.predict(df_processed)[0]
         price = np.expm1(log_prediction)
-        
+
         st.success(f"🏡 Estimated Value: **${price:,.2f}**")
         if price > 200000:
             st.balloons()
-            
+
+        # SHAP explainability
+        with st.expander("🔍 Why this price? (SHAP Explanation)"):
+            with st.spinner("Calculating feature impact..."):
+                try:
+                    preprocessor = model.named_steps['preprocessor']
+                    df_transformed = preprocessor.transform(df_processed)
+                    explainer = get_shap_explainer(model)
+                    shap_values = explainer.shap_values(df_transformed)
+
+                    feature_names = preprocessor.get_feature_names_out()
+
+                    fig, ax = plt.subplots(figsize=(8, 6))
+                    shap.summary_plot(
+                        shap_values, df_transformed,
+                        feature_names=feature_names,
+                        plot_type="bar", show=False, max_display=10
+                    )
+                    st.pyplot(fig)
+                    plt.close(fig)
+                except Exception as shap_err:
+                    st.warning(f"Could not generate SHAP explanation: {shap_err}")
+
     except Exception as e:
         st.error(f"Error: {str(e)}")
